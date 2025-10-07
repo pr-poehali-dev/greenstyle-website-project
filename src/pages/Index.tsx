@@ -2,32 +2,113 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [selectedPlant, setSelectedPlant] = useState<any>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const services = [
-    { icon: 'Sprout', title: 'Посадка растений', description: 'Профессиональная посадка декоративных и плодовых растений' },
-    { icon: 'Droplets', title: 'Системы полива', description: 'Автополив и капельный полив для вашего участка' },
-    { icon: 'Trees', title: 'Озеленение', description: 'Комплексное озеленение территории любой сложности' },
-    { icon: 'Scissors', title: 'Уход за растениями', description: 'Регулярный уход, обрезка, подкормка растений' },
-    { icon: 'Footprints', title: 'Дорожки', description: 'Создание красивых и функциональных садовых дорожек' },
-    { icon: 'Lightbulb', title: 'Освещение участка', description: 'Дизайн и установка ландшафтного освещения' },
-    { icon: 'Waves', title: 'Канализация', description: 'Проектирование и монтаж систем водоотведения' },
-    { icon: 'Truck', title: 'Доставка', description: 'Доставка растений и материалов прямо к вам' },
-    { icon: 'Leaf', title: 'Посев газона', description: 'Создание идеального газонного покрытия' },
-    { icon: 'Shovel', title: 'Земляные работы', description: 'Раскопка траншей и подготовка участка' }
+    { icon: 'Sprout', title: 'Посадка растений', description: 'Профессиональная посадка декоративных и плодовых растений с учетом типа почвы' },
+    { icon: 'Droplets', title: 'Системы полива', description: 'Автополив, капельный полив, дождевание для экономии воды' },
+    { icon: 'Trees', title: 'Озеленение участка', description: 'Комплексное озеленение, создание альпийских горок, живых изгородей' },
+    { icon: 'Scissors', title: 'Уход за растениями', description: 'Обрезка, подкормка, защита от вредителей, сезонный уход' },
+    { icon: 'Footprints', title: 'Садовые дорожки', description: 'Тротуарная плитка, натуральный камень, гравийные дорожки' },
+    { icon: 'Lightbulb', title: 'Освещение участка', description: 'Садовое освещение, подсветка растений, декоративное освещение' },
+    { icon: 'Waves', title: 'Дренаж и канализация', description: 'Ливневая канализация, дренажные системы, отвод воды' },
+    { icon: 'Truck', title: 'Доставка', description: 'Доставка растений, грунта и материалов по Твери и области' },
+    { icon: 'Leaf', title: 'Газоны под ключ', description: 'Посев газона, рулонный газон, автоматический полив газона' },
+    { icon: 'Shovel', title: 'Земляные работы', description: 'Выравнивание участка, раскопка траншей, планировка территории' },
+    { icon: 'Flower2', title: 'Цветники и клумбы', description: 'Проектирование и создание цветников, миксбордеров, рабаток' },
+    { icon: 'TreePine', title: 'Посадка крупномеров', description: 'Посадка взрослых деревьев с гарантией приживаемости' },
+    { icon: 'Fence', title: 'Живые изгороди', description: 'Создание зеленых ограждений из кустарников и вьющихся растений' },
+    { icon: 'Mountain', title: 'Альпийские горки', description: 'Рокарии, каменистые сады с горными растениями' },
+    { icon: 'Droplet', title: 'Пруды и водоемы', description: 'Декоративные пруды, фонтаны, водопады на участке' }
   ];
 
-  const catalog = [
-    { name: 'Декоративные кустарники', price: 'от 1 500 ₽', description: 'Широкий выбор кустарников для вашего сада' },
-    { name: 'Хвойные растения', price: 'от 2 500 ₽', description: 'Ели, сосны, туи различных сортов' },
-    { name: 'Плодовые деревья', price: 'от 3 000 ₽', description: 'Яблони, груши, сливы и другие' },
-    { name: 'Многолетники', price: 'от 300 ₽', description: 'Цветущие многолетние растения' },
-    { name: 'Газонная трава', price: 'от 500 ₽/м²', description: 'Качественные газонные смеси' },
-    { name: 'Розы', price: 'от 800 ₽', description: 'Элитные сорта роз для вашего сада' }
-  ];
+  const plantCategories = {
+    'Декоративные кустарники': {
+      icon: 'Shrub',
+      price: 'от 1 500 ₽',
+      description: 'Широкий выбор кустарников для вашего сада',
+      varieties: [
+        { name: 'Спирея японская', price: '1 500 ₽', height: '0.6-0.8 м', bloom: 'Июнь-август' },
+        { name: 'Гортензия древовидная', price: '2 200 ₽', height: '1-1.5 м', bloom: 'Июль-сентябрь' },
+        { name: 'Барбарис Тунберга', price: '1 800 ₽', height: '0.8-1.2 м', bloom: 'Май' },
+        { name: 'Пузыреплодник', price: '1 600 ₽', height: '1.5-2 м', bloom: 'Июнь' },
+        { name: 'Дерен белый', price: '1 700 ₽', height: '1.5-2.5 м', bloom: 'Май-июнь' }
+      ]
+    },
+    'Хвойные растения': {
+      icon: 'TreePine',
+      price: 'от 2 500 ₽',
+      description: 'Ели, сосны, туи различных сортов',
+      varieties: [
+        { name: 'Туя западная Смарагд', price: '3 500 ₽', height: '1-1.5 м', feature: 'Зимостойкая' },
+        { name: 'Можжевельник казацкий', price: '2 500 ₽', height: '0.5-0.8 м', feature: 'Почвопокровный' },
+        { name: 'Ель голубая колючая', price: '5 000 ₽', height: '1.5-2 м', feature: 'Голубая хвоя' },
+        { name: 'Сосна горная', price: '3 200 ₽', height: '0.8-1.2 м', feature: 'Компактная' },
+        { name: 'Кипарисовик Лавсона', price: '4 000 ₽', height: '1-1.5 м', feature: 'Ароматная хвоя' }
+      ]
+    },
+    'Плодовые деревья': {
+      icon: 'Apple',
+      price: 'от 3 000 ₽',
+      description: 'Яблони, груши, сливы и другие',
+      varieties: [
+        { name: 'Яблоня Антоновка', price: '3 000 ₽', age: '2-3 года', yield: 'Август-сентябрь' },
+        { name: 'Груша Лада', price: '3 500 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Слива Медовая', price: '3 200 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Вишня Владимирская', price: '2 800 ₽', age: '2-3 года', yield: 'Июль' },
+        { name: 'Черешня Ипуть', price: '4 000 ₽', age: '2-3 года', yield: 'Июнь-июль' }
+      ]
+    },
+    'Многолетники': {
+      icon: 'Flower',
+      price: 'от 300 ₽',
+      description: 'Цветущие многолетние растения',
+      varieties: [
+        { name: 'Хоста гибридная', price: '400 ₽', height: '0.3-0.6 м', bloom: 'Июль-август' },
+        { name: 'Лилейник гибридный', price: '500 ₽', height: '0.6-0.8 м', bloom: 'Июнь-июль' },
+        { name: 'Пион травянистый', price: '800 ₽', height: '0.6-0.9 м', bloom: 'Май-июнь' },
+        { name: 'Ирис сибирский', price: '350 ₽', height: '0.6-1 м', bloom: 'Май-июнь' },
+        { name: 'Астильба', price: '450 ₽', height: '0.5-1 м', bloom: 'Июль-август' }
+      ]
+    },
+    'Газонная трава': {
+      icon: 'Leaf',
+      price: 'от 500 ₽/м²',
+      description: 'Качественные газонные смеси',
+      varieties: [
+        { name: 'Универсальный газон', price: '500 ₽/м²', type: 'Посевной', feature: 'Износостойкий' },
+        { name: 'Партерный газон', price: '800 ₽/м²', type: 'Посевной', feature: 'Элитный' },
+        { name: 'Спортивный газон', price: '600 ₽/м²', type: 'Посевной', feature: 'Супер прочный' },
+        { name: 'Теневой газон', price: '550 ₽/м²', type: 'Посевной', feature: 'Для тени' },
+        { name: 'Рулонный газон', price: '350 ₽/м²', type: 'Рулонный', feature: 'Готовый результат' }
+      ]
+    },
+    'Розы': {
+      icon: 'Flower2',
+      price: 'от 800 ₽',
+      description: 'Элитные сорта роз для вашего сада',
+      varieties: [
+        { name: 'Роза чайно-гибридная', price: '900 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза флорибунда', price: '800 ₽', height: '0.6-0.8 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза плетистая', price: '1 200 ₽', height: '2-3 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Роза парковая', price: '1 000 ₽', height: '1-1.5 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Роза почвопокровная', price: '700 ₽', height: '0.3-0.5 м', bloom: 'Июнь-октябрь' }
+      ]
+    }
+  };
+
+  const openPlantDialog = (categoryName: string) => {
+    const category = plantCategories[categoryName as keyof typeof plantCategories];
+    setSelectedPlant({ name: categoryName, ...category });
+    setIsDialogOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,18 +189,26 @@ const Index = () => {
             </TabsList>
             <TabsContent value="plants">
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {catalog.map((item) => (
-                  <Card key={item.name} className="transition-all hover:shadow-lg animate-scale-in">
+                {Object.entries(plantCategories).map(([name, data]) => (
+                  <Card 
+                    key={name} 
+                    className="transition-all hover:shadow-lg animate-scale-in cursor-pointer"
+                    onClick={() => openPlantDialog(name)}
+                  >
                     <CardHeader>
                       <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                        <Icon name="Leaf" className="text-primary" size={32} />
+                        <Icon name={data.icon} className="text-primary" size={32} />
                       </div>
-                      <CardTitle className="font-heading">{item.name}</CardTitle>
-                      <CardDescription>{item.description}</CardDescription>
+                      <CardTitle className="font-heading">{name}</CardTitle>
+                      <CardDescription>{data.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-2xl font-bold text-primary">{item.price}</p>
-                      <Button className="mt-4 w-full">Заказать</Button>
+                      <p className="text-2xl font-bold text-primary mb-2">{data.price}</p>
+                      <Badge variant="secondary">{data.varieties.length} сортов</Badge>
+                      <Button className="mt-4 w-full">
+                        Выбрать сорт
+                        <Icon name="ChevronRight" size={16} className="ml-2" />
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
@@ -268,6 +357,78 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          {selectedPlant && (
+            <>
+              <DialogHeader>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Icon name={selectedPlant.icon} className="text-primary" size={24} />
+                  </div>
+                  <div>
+                    <DialogTitle className="font-heading text-2xl">{selectedPlant.name}</DialogTitle>
+                    <DialogDescription>{selectedPlant.description}</DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                {selectedPlant.varieties.map((variety: any, index: number) => (
+                  <Card key={index} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{variety.name}</CardTitle>
+                      <p className="text-2xl font-bold text-primary">{variety.price}</p>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      {variety.height && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Ruler" size={16} className="text-muted-foreground" />
+                          <span>Высота: {variety.height}</span>
+                        </div>
+                      )}
+                      {variety.bloom && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Calendar" size={16} className="text-muted-foreground" />
+                          <span>Цветение: {variety.bloom}</span>
+                        </div>
+                      )}
+                      {variety.feature && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Star" size={16} className="text-muted-foreground" />
+                          <span>{variety.feature}</span>
+                        </div>
+                      )}
+                      {variety.age && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Clock" size={16} className="text-muted-foreground" />
+                          <span>Возраст: {variety.age}</span>
+                        </div>
+                      )}
+                      {variety.yield && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Apple" size={16} className="text-muted-foreground" />
+                          <span>Урожай: {variety.yield}</span>
+                        </div>
+                      )}
+                      {variety.type && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Package" size={16} className="text-muted-foreground" />
+                          <span>Тип: {variety.type}</span>
+                        </div>
+                      )}
+                      <Button className="w-full mt-3">
+                        <Icon name="ShoppingCart" size={16} className="mr-2" />
+                        Заказать
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
