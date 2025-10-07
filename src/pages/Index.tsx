@@ -484,6 +484,16 @@ const Index = () => {
     );
   }, [searchQuery, allPlants]);
 
+  const filteredMaterials = useMemo(() => {
+    if (!searchQuery.trim()) return materials;
+    
+    const query = searchQuery.toLowerCase();
+    return materials.filter(material => 
+      material.name.toLowerCase().includes(query) ||
+      material.category.toLowerCase().includes(query)
+    );
+  }, [searchQuery]);
+
   const openPlantDialog = (categoryName: string) => {
     const category = plantCategories[categoryName as keyof typeof plantCategories];
     setSelectedPlant({ name: categoryName, ...category });
@@ -671,8 +681,15 @@ const Index = () => {
                 <div className="mb-4 text-sm text-muted-foreground text-center">
                   Все цены указаны с учетом доставки и сервисного обслуживания
                 </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {materials.map((material, index) => (
+                {filteredMaterials.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Icon name="Search" size={64} className="mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Материалы не найдены</p>
+                    <p className="text-sm text-muted-foreground mt-2">Попробуйте изменить поисковый запрос</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {filteredMaterials.map((material, index) => (
                     <Card key={index} className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <Badge variant="outline" className="mb-2 w-fit">{material.category}</Badge>
@@ -689,8 +706,9 @@ const Index = () => {
                         </Button>
                       </CardContent>
                     </Card>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
             </Tabs>
           )}
