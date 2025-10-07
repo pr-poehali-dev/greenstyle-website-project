@@ -383,6 +383,83 @@ const Index = () => {
     }
   };
 
+  const materials = [
+    { category: 'Грунты и удобрения', name: 'Грунт плодородный', price: '330 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Торф низинный', price: '280 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Перегной конский', price: '350 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Компост универсальный', price: '310 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Чернозем', price: '370 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Керамзит дренажный', price: '420 ₽/мешок 50л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Удобрение комплексное NPK', price: '580 ₽/5кг', unit: 'упаковка' },
+    { category: 'Грунты и удобрения', name: 'Навоз коровий сухой', price: '290 ₽/мешок 40л', unit: 'мешок' },
+    { category: 'Грунты и удобрения', name: 'Доломитовая мука', price: '320 ₽/40кг', unit: 'мешок' },
+    { category: 'Мульча и декор', name: 'Кора сосновая фракция 2-5см', price: '460 ₽/60л', unit: 'мешок' },
+    { category: 'Мульча и декор', name: 'Щепа декоративная лиственничная', price: '520 ₽/60л', unit: 'мешок' },
+    { category: 'Мульча и декор', name: 'Щепа кедровая', price: '650 ₽/60л', unit: 'мешок' },
+    { category: 'Мульча и декор', name: 'Мульча декоративная красная', price: '780 ₽/50л', unit: 'мешок' },
+    { category: 'Мульча и декор', name: 'Солома для мульчирования', price: '240 ₽/тюк', unit: 'шт' },
+    { category: 'Камень и гравий', name: 'Щебень гранитный фр. 5-20мм', price: '1 850 ₽/м³', unit: 'м³' },
+    { category: 'Камень и гравий', name: 'Щебень известняковый фр. 20-40мм', price: '1 650 ₽/м³', unit: 'м³' },
+    { category: 'Камень и гравий', name: 'Гравий речной фр. 5-20мм', price: '2 200 ₽/м³', unit: 'м³' },
+    { category: 'Камень и гравий', name: 'Камень декоративный белый мраморный', price: '4 500 ₽/мешок 25кг', unit: 'мешок' },
+    { category: 'Камень и гравий', name: 'Галька морская фр. 30-50мм', price: '3 800 ₽/мешок 25кг', unit: 'мешок' },
+    { category: 'Камень и гравий', name: 'Крошка гранитная фр. 2-5мм', price: '1 950 ₽/м³', unit: 'м³' },
+    { category: 'Камень и гравий', name: 'Валуны декоративные 20-40см', price: '650 ₽/шт', unit: 'шт' },
+    { category: 'Песок и смеси', name: 'Песок речной намывной', price: '1 100 ₽/м³', unit: 'м³' },
+    { category: 'Песок и смеси', name: 'Песок карьерный', price: '900 ₽/м³', unit: 'м³' },
+    { category: 'Песок и смеси', name: 'Песко-гравийная смесь ПГС', price: '1 250 ₽/м³', unit: 'м³' },
+    { category: 'Песок и смеси', name: 'Цемент ПЦ 500 ДО', price: '540 ₽/50кг', unit: 'мешок' },
+    { category: 'Песок и смеси', name: 'Цемент ПЦ 400', price: '480 ₽/50кг', unit: 'мешок' },
+    { category: 'Песок и смеси', name: 'Смесь песчано-цементная М150', price: '320 ₽/40кг', unit: 'мешок' },
+    { category: 'Геотекстиль', name: 'Геотекстиль дорнит 150г/м²', price: '65 ₽/м²', unit: 'м²' },
+    { category: 'Геотекстиль', name: 'Геотекстиль дорнит 200г/м²', price: '85 ₽/м²', unit: 'м²' },
+    { category: 'Геотекстиль', name: 'Пленка полиэтиленовая техническая 200мкм', price: '110 ₽/м²', unit: 'м²' },
+    { category: 'Геотекстиль', name: 'Геосетка полимерная 30х1.5м', price: '320 ₽/м²', unit: 'м²' },
+    { category: 'Геотекстиль', name: 'Агроткань от сорняков 100г/м²', price: '55 ₽/м²', unit: 'м²' },
+    { category: 'Тротуарная плитка', name: 'Плитка тротуарная Брусчатка серая 200ё1004560мм', price: '680 ₽/м²', unit: 'м²' },
+    { category: 'Тротуарная плитка', name: 'Плитка Катушка красная 300ё30045мм', price: '850 ₽/м²', unit: 'м²' },
+    { category: 'Тротуарная плитка', name: 'Плитка Клевер коричневая 295ё29540мм', price: '720 ₽/м²', unit: 'м²' },
+    { category: 'Тротуарная плитка', name: 'Бордюр тротуарный 500ё20080мм', price: '180 ₽/шт', unit: 'шт' },
+    { category: 'Тротуарная плитка', name: 'Плитка Волна желтая 240ё13540мм', price: '790 ₽/м²', unit: 'м²' },
+    { category: 'Газонные решетки', name: 'Решетка газонная пластиковая 400ё60040мм', price: '550 ₽/м²', unit: 'м²' },
+    { category: 'Газонные решетки', name: 'Решетка бетонная для парковки 600ё40080мм', price: '880 ₽/м²', unit: 'м²' },
+    { category: 'Газонные решетки', name: 'Решетка пластиковая усиленная 500ё50050мм', price: '650 ₽/м²', unit: 'м²' },
+    { category: 'Дренаж', name: 'Труба дренажная перфорированная д110мм', price: '220 ₽/м.п.', unit: 'м.п.' },
+    { category: 'Дренаж', name: 'Труба дренажная в фильтре д160мм', price: '380 ₽/м.п.', unit: 'м.п.' },
+    { category: 'Дренаж', name: 'Колодец дренажный д340мм высота 1м', price: '4 500 ₽/шт', unit: 'шт' },
+    { category: 'Дренаж', name: 'Лоток водоотводный пластиковый 1м', price: '520 ₽/шт', unit: 'шт' },
+    { category: 'Дренаж', name: 'Решетка для лотка пластиковая', price: '280 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Шланг поливочный 3/4" 25м', price: '1 450 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Шланг садовый армированный 1" 50м', price: '3 200 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Распылитель веерный регулируемый', price: '380 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Дождеватель круговой на штыре', price: '850 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Коннектор быстросъемный 3/4"', price: '180 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Катушка для шланга настенная', price: '2 400 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Таймер полива электронный', price: '3 800 ₽/шт', unit: 'шт' },
+    { category: 'Полив', name: 'Клапан электромагнитный 1"', price: '4 500 ₽/шт', unit: 'шт' },
+    { category: 'Освещение', name: 'Светильник садовый на солнечной батарее', price: '650 ₽/шт', unit: 'шт' },
+    { category: 'Освещение', name: 'Фонарь садовый LED на столбе 1.5м', price: '8 500 ₽/шт', unit: 'шт' },
+    { category: 'Освещение', name: 'Прожектор светодиодный 30Вт IP65', price: '2 800 ₽/шт', unit: 'шт' },
+    { category: 'Освещение', name: 'Гирлянда уличная LED 10м', price: '1 950 ₽/шт', unit: 'шт' },
+    { category: 'Освещение', name: 'Подсветка грунтовая спот 5Вт', price: '1 200 ₽/шт', unit: 'шт' },
+    { category: 'Ограждения', name: 'Сетка рабица оцинкованная 1.5м высота', price: '950 ₽/м.п.', unit: 'м.п.' },
+    { category: 'Ограждения', name: 'Сетка-гиттер сварная 1.53м 4м', price: '1 850 ₽/м.п.', unit: 'м.п.' },
+    { category: 'Ограждения', name: 'Штакетник металлический двусторонний', price: '580 ₽/м.п.', unit: 'м.п.' },
+    { category: 'Ограждения', name: 'Столб металлический 60ё6045600мм', price: '1 100 ₽/шт', unit: 'шт' },
+    { category: 'Ограждения', name: 'Бордюрная лента гибкая 10м', price: '420 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Лопата штыковая с черенком', price: '1 350 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Грабли веерные пластиковые', price: '680 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Триммер электрический 1000Вт', price: '5 500 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Газонокосилка электрическая 1600Вт', price: '12 500 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Секатор садовый кованый', price: '1 150 ₽/шт', unit: 'шт' },
+    { category: 'Инструменты', name: 'Тачка садовая 80л одноколесная', price: '4 200 ₽/шт', unit: 'шт' },
+    { category: 'Пруды и фонтаны', name: 'Пленка для пруда бутилкаучуковая 1.02мм', price: '950 ₽/м²', unit: 'м²' },
+    { category: 'Пруды и фонтаны', name: 'Насос для фонтана 3000л/ч', price: '8 500 ₽/шт', unit: 'шт' },
+    { category: 'Пруды и фонтаны', name: 'Фильтр для пруда с УФ-лампой 11Вт', price: '15 500 ₽/шт', unit: 'шт' },
+    { category: 'Пруды и фонтаны', name: 'Подсветка для пруда LED RGB', price: '3 800 ₽/шт', unit: 'шт' },
+    { category: 'Пруды и фонтаны', name: 'Каскад декоративный 3-уровневый', price: '12 000 ₽/шт', unit: 'шт' }
+  ];
+
   const allPlants = useMemo(() => {
     const plants: any[] = [];
     Object.entries(plantCategories).forEach(([category, data]) => {
@@ -591,9 +668,28 @@ const Index = () => {
                 </div>
               </TabsContent>
               <TabsContent value="materials">
-                <div className="text-center py-12">
-                  <Icon name="Package" size={64} className="mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Каталог материалов в разработке</p>
+                <div className="mb-4 text-sm text-muted-foreground text-center">
+                  Все цены указаны с учетом доставки и сервисного обслуживания
+                </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {materials.map((material, index) => (
+                    <Card key={index} className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <Badge variant="outline" className="mb-2 w-fit">{material.category}</Badge>
+                        <CardTitle className="text-base">{material.name}</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        <div className="flex items-baseline justify-between">
+                          <span className="text-2xl font-bold text-primary">{material.price}</span>
+                          <span className="text-sm text-muted-foreground">за {material.unit}</span>
+                        </div>
+                        <Button className="w-full">
+                          <Icon name="ShoppingCart" size={16} className="mr-2" />
+                          Заказать
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </TabsContent>
             </Tabs>
