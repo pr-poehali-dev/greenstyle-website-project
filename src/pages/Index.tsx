@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [selectedPlant, setSelectedPlant] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const services = [
     { icon: 'Sprout', title: 'Посадка растений', description: 'Профессиональная посадка декоративных и плодовых растений с учетом типа почвы' },
@@ -32,14 +34,24 @@ const Index = () => {
   const plantCategories = {
     'Декоративные кустарники': {
       icon: 'Shrub',
-      price: 'от 1 500 ₽',
+      price: 'от 1 200 ₽',
       description: 'Широкий выбор кустарников для вашего сада',
       varieties: [
         { name: 'Спирея японская', price: '1 500 ₽', height: '0.6-0.8 м', bloom: 'Июнь-август' },
         { name: 'Гортензия древовидная', price: '2 200 ₽', height: '1-1.5 м', bloom: 'Июль-сентябрь' },
+        { name: 'Гортензия метельчатая', price: '2 500 ₽', height: '1.5-2 м', bloom: 'Июль-октябрь' },
         { name: 'Барбарис Тунберга', price: '1 800 ₽', height: '0.8-1.2 м', bloom: 'Май' },
-        { name: 'Пузыреплодник', price: '1 600 ₽', height: '1.5-2 м', bloom: 'Июнь' },
-        { name: 'Дерен белый', price: '1 700 ₽', height: '1.5-2.5 м', bloom: 'Май-июнь' }
+        { name: 'Пузыреплодник калинолистный', price: '1 600 ₽', height: '1.5-2 м', bloom: 'Июнь' },
+        { name: 'Дерен белый', price: '1 700 ₽', height: '1.5-2.5 м', bloom: 'Май-июнь' },
+        { name: 'Дерен красный', price: '1 800 ₽', height: '1.5-2 м', bloom: 'Май-июнь' },
+        { name: 'Калина обыкновенная', price: '2 000 ₽', height: '2-3 м', bloom: 'Май-июнь' },
+        { name: 'Чубушник (Жасмин)', price: '1 900 ₽', height: '1.5-2.5 м', bloom: 'Июнь-июль' },
+        { name: 'Форзиция', price: '2 100 ₽', height: '1.5-2 м', bloom: 'Апрель' },
+        { name: 'Бересклет крылатый', price: '2 300 ₽', height: '1-1.5 м', bloom: 'Май' },
+        { name: 'Лапчатка кустарниковая', price: '1 200 ₽', height: '0.5-1 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Вейгела', price: '2 000 ₽', height: '1-1.5 м', bloom: 'Май-июнь' },
+        { name: 'Снежноягодник', price: '1 400 ₽', height: '1-1.5 м', bloom: 'Июнь-июль' },
+        { name: 'Кизильник блестящий', price: '1 500 ₽', height: '1-2 м', bloom: 'Май-июнь' }
       ]
     },
     'Хвойные растения': {
@@ -48,61 +60,170 @@ const Index = () => {
       description: 'Ели, сосны, туи различных сортов',
       varieties: [
         { name: 'Туя западная Смарагд', price: '3 500 ₽', height: '1-1.5 м', feature: 'Зимостойкая' },
+        { name: 'Туя западная Брабант', price: '3 200 ₽', height: '1-1.5 м', feature: 'Быстрорастущая' },
+        { name: 'Туя западная Даника', price: '2 800 ₽', height: '0.4-0.6 м', feature: 'Шаровидная' },
+        { name: 'Туя западная Голден Глоб', price: '3 000 ₽', height: '0.6-0.8 м', feature: 'Золотистая' },
         { name: 'Можжевельник казацкий', price: '2 500 ₽', height: '0.5-0.8 м', feature: 'Почвопокровный' },
+        { name: 'Можжевельник скальный', price: '3 800 ₽', height: '1-1.5 м', feature: 'Голубой' },
+        { name: 'Можжевельник горизонтальный', price: '2 700 ₽', height: '0.3-0.5 м', feature: 'Стелющийся' },
+        { name: 'Можжевельник китайский', price: '3 500 ₽', height: '1-1.5 м', feature: 'Раскидистый' },
         { name: 'Ель голубая колючая', price: '5 000 ₽', height: '1.5-2 м', feature: 'Голубая хвоя' },
+        { name: 'Ель обыкновенная', price: '4 000 ₽', height: '1.5-2 м', feature: 'Классическая' },
+        { name: 'Ель канадская Коника', price: '3 500 ₽', height: '0.6-0.8 м', feature: 'Карликовая' },
         { name: 'Сосна горная', price: '3 200 ₽', height: '0.8-1.2 м', feature: 'Компактная' },
-        { name: 'Кипарисовик Лавсона', price: '4 000 ₽', height: '1-1.5 м', feature: 'Ароматная хвоя' }
+        { name: 'Сосна кедровая', price: '4 500 ₽', height: '1-1.5 м', feature: 'Орехоплодная' },
+        { name: 'Сосна обыкновенная', price: '3 000 ₽', height: '1.5-2 м', feature: 'Быстрорастущая' },
+        { name: 'Кипарисовик Лавсона', price: '4 000 ₽', height: '1-1.5 м', feature: 'Ароматная' },
+        { name: 'Пихта корейская', price: '4 800 ₽', height: '1-1.5 м', feature: 'Декоративная' },
+        { name: 'Лиственница', price: '3 500 ₽', height: '1.5-2 м', feature: 'Листопадная' }
       ]
     },
     'Плодовые деревья': {
       icon: 'Apple',
-      price: 'от 3 000 ₽',
+      price: 'от 2 500 ₽',
       description: 'Яблони, груши, сливы и другие',
       varieties: [
         { name: 'Яблоня Антоновка', price: '3 000 ₽', age: '2-3 года', yield: 'Август-сентябрь' },
+        { name: 'Яблоня Мелба', price: '3 200 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Яблоня Белый налив', price: '2 800 ₽', age: '2-3 года', yield: 'Июль-август' },
+        { name: 'Яблоня Джонатан', price: '3 300 ₽', age: '2-3 года', yield: 'Сентябрь' },
+        { name: 'Яблоня Богатырь', price: '3 100 ₽', age: '2-3 года', yield: 'Сентябрь-октябрь' },
+        { name: 'Яблоня колоновидная', price: '2 500 ₽', age: '2 года', yield: 'Август-сентябрь' },
         { name: 'Груша Лада', price: '3 500 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Груша Чижовская', price: '3 600 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Груша Конференция', price: '3 800 ₽', age: '2-3 года', yield: 'Сентябрь' },
+        { name: 'Груша Велеса', price: '3 700 ₽', age: '2-3 года', yield: 'Сентябрь' },
         { name: 'Слива Медовая', price: '3 200 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Слива Ренклод', price: '3 400 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Слива Венгерка', price: '3 100 ₽', age: '2-3 года', yield: 'Сентябрь' },
         { name: 'Вишня Владимирская', price: '2 800 ₽', age: '2-3 года', yield: 'Июль' },
-        { name: 'Черешня Ипуть', price: '4 000 ₽', age: '2-3 года', yield: 'Июнь-июль' }
+        { name: 'Вишня Шоколадница', price: '3 000 ₽', age: '2-3 года', yield: 'Июль' },
+        { name: 'Черешня Ипуть', price: '4 000 ₽', age: '2-3 года', yield: 'Июнь-июль' },
+        { name: 'Черешня Бряночка', price: '4 200 ₽', age: '2-3 года', yield: 'Июнь' },
+        { name: 'Абрикос Триумф северный', price: '3 800 ₽', age: '2-3 года', yield: 'Июль-август' },
+        { name: 'Персик Краснощёкий', price: '4 500 ₽', age: '2-3 года', yield: 'Август' },
+        { name: 'Рябина черноплодная', price: '2 500 ₽', age: '2-3 года', yield: 'Сентябрь' }
       ]
     },
     'Многолетники': {
       icon: 'Flower',
-      price: 'от 300 ₽',
+      price: 'от 250 ₽',
       description: 'Цветущие многолетние растения',
       varieties: [
         { name: 'Хоста гибридная', price: '400 ₽', height: '0.3-0.6 м', bloom: 'Июль-август' },
         { name: 'Лилейник гибридный', price: '500 ₽', height: '0.6-0.8 м', bloom: 'Июнь-июль' },
         { name: 'Пион травянистый', price: '800 ₽', height: '0.6-0.9 м', bloom: 'Май-июнь' },
         { name: 'Ирис сибирский', price: '350 ₽', height: '0.6-1 м', bloom: 'Май-июнь' },
-        { name: 'Астильба', price: '450 ₽', height: '0.5-1 м', bloom: 'Июль-август' }
+        { name: 'Ирис бородатый', price: '400 ₽', height: '0.5-0.8 м', bloom: 'Май-июнь' },
+        { name: 'Астильба', price: '450 ₽', height: '0.5-1 м', bloom: 'Июль-август' },
+        { name: 'Флокс метельчатый', price: '380 ₽', height: '0.6-1.2 м', bloom: 'Июль-сентябрь' },
+        { name: 'Эхинацея пурпурная', price: '320 ₽', height: '0.6-1 м', bloom: 'Июль-сентябрь' },
+        { name: 'Рудбекия', price: '300 ₽', height: '0.6-1.5 м', bloom: 'Июль-октябрь' },
+        { name: 'Лилия азиатская', price: '350 ₽', height: '0.6-1.2 м', bloom: 'Июнь-июль' },
+        { name: 'Лилия восточная', price: '450 ₽', height: '0.8-1.5 м', bloom: 'Июль-август' },
+        { name: 'Дельфиниум', price: '420 ₽', height: '1-2 м', bloom: 'Июнь-июль' },
+        { name: 'Люпин', price: '280 ₽', height: '0.8-1.2 м', bloom: 'Июнь-июль' },
+        { name: 'Колокольчик', price: '250 ₽', height: '0.3-0.8 м', bloom: 'Июнь-август' },
+        { name: 'Гейхера', price: '400 ₽', height: '0.3-0.5 м', bloom: 'Июнь-август' },
+        { name: 'Очиток (Седум)', price: '300 ₽', height: '0.3-0.6 м', bloom: 'Август-октябрь' },
+        { name: 'Нивяник (Ромашка садовая)', price: '280 ₽', height: '0.5-0.8 м', bloom: 'Июнь-август' },
+        { name: 'Тысячелистник', price: '270 ₽', height: '0.5-1 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Гвоздика садовая', price: '300 ₽', height: '0.3-0.6 м', bloom: 'Июнь-август' },
+        { name: 'Аквилегия (Водосбор)', price: '320 ₽', height: '0.5-0.8 м', bloom: 'Май-июнь' }
       ]
     },
     'Газонная трава': {
       icon: 'Leaf',
-      price: 'от 500 ₽/м²',
+      price: 'от 350 ₽/м²',
       description: 'Качественные газонные смеси',
       varieties: [
         { name: 'Универсальный газон', price: '500 ₽/м²', type: 'Посевной', feature: 'Износостойкий' },
         { name: 'Партерный газон', price: '800 ₽/м²', type: 'Посевной', feature: 'Элитный' },
         { name: 'Спортивный газон', price: '600 ₽/м²', type: 'Посевной', feature: 'Супер прочный' },
         { name: 'Теневой газон', price: '550 ₽/м²', type: 'Посевной', feature: 'Для тени' },
-        { name: 'Рулонный газон', price: '350 ₽/м²', type: 'Рулонный', feature: 'Готовый результат' }
+        { name: 'Луговой газон', price: '400 ₽/м²', type: 'Посевной', feature: 'Натуральный' },
+        { name: 'Мавританский газон', price: '450 ₽/м²', type: 'Посевной', feature: 'С цветами' },
+        { name: 'Рулонный газон Стандарт', price: '350 ₽/м²', type: 'Рулонный', feature: 'Готовый' },
+        { name: 'Рулонный газон Премиум', price: '500 ₽/м²', type: 'Рулонный', feature: 'Элитный' },
+        { name: 'Искусственный газон', price: '1200 ₽/м²', type: 'Искусственный', feature: 'Не требует ухода' }
       ]
     },
     'Розы': {
       icon: 'Flower2',
-      price: 'от 800 ₽',
+      price: 'от 700 ₽',
       description: 'Элитные сорта роз для вашего сада',
       varieties: [
-        { name: 'Роза чайно-гибридная', price: '900 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза чайно-гибридная красная', price: '900 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза чайно-гибридная белая', price: '950 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза чайно-гибридная желтая', price: '900 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза чайно-гибридная розовая', price: '900 ₽', height: '0.8-1.2 м', bloom: 'Июнь-октябрь' },
         { name: 'Роза флорибунда', price: '800 ₽', height: '0.6-0.8 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза патио (миниатюрная)', price: '700 ₽', height: '0.3-0.5 м', bloom: 'Июнь-октябрь' },
         { name: 'Роза плетистая', price: '1 200 ₽', height: '2-3 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Роза плетистая Пьер де Ронсар', price: '1 400 ₽', height: '2-3 м', bloom: 'Июнь-сентябрь' },
         { name: 'Роза парковая', price: '1 000 ₽', height: '1-1.5 м', bloom: 'Июнь-сентябрь' },
-        { name: 'Роза почвопокровная', price: '700 ₽', height: '0.3-0.5 м', bloom: 'Июнь-октябрь' }
+        { name: 'Роза почвопокровная', price: '700 ₽', height: '0.3-0.5 м', bloom: 'Июнь-октябрь' },
+        { name: 'Роза английская Дэвида Остина', price: '1 500 ₽', height: '1-1.5 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Роза штамбовая', price: '3 000 ₽', height: '1.2-1.5 м', bloom: 'Июнь-октябрь' }
+      ]
+    },
+    'Лиственные деревья': {
+      icon: 'Trees',
+      price: 'от 3 500 ₽',
+      description: 'Декоративные и плодовые деревья',
+      varieties: [
+        { name: 'Береза повислая', price: '4 000 ₽', height: '2-2.5 м', feature: 'Быстрорастущая' },
+        { name: 'Клен остролистный', price: '4 500 ₽', height: '2-2.5 м', feature: 'Яркая осень' },
+        { name: 'Клен красный', price: '5 500 ₽', height: '2-2.5 м', feature: 'Красные листья' },
+        { name: 'Липа мелколистная', price: '4 800 ₽', height: '2-2.5 м', feature: 'Ароматная' },
+        { name: 'Рябина обыкновенная', price: '3 500 ₽', height: '2-2.5 м', feature: 'Декоративная' },
+        { name: 'Ива плакучая', price: '4 200 ₽', height: '2-2.5 м', feature: 'Плакучая форма' },
+        { name: 'Дуб черешчатый', price: '5 000 ₽', height: '2-2.5 м', feature: 'Долговечный' },
+        { name: 'Ясень обыкновенный', price: '4 300 ₽', height: '2-2.5 м', feature: 'Быстрорастущий' },
+        { name: 'Каштан конский', price: '5 200 ₽', height: '2-2.5 м', feature: 'Цветущий' },
+        { name: 'Черемуха', price: '3 800 ₽', height: '2-2.5 м', feature: 'Ароматная' }
+      ]
+    },
+    'Вьющиеся растения': {
+      icon: 'Fence',
+      price: 'от 600 ₽',
+      description: 'Лианы для вертикального озеленения',
+      varieties: [
+        { name: 'Клематис крупноцветковый', price: '800 ₽', height: '2-3 м', bloom: 'Июнь-сентябрь' },
+        { name: 'Клематис мелкоцветковый', price: '600 ₽', height: '3-5 м', bloom: 'Июль-август' },
+        { name: 'Девичий виноград', price: '700 ₽', height: '10-15 м', feature: 'Быстрорастущий' },
+        { name: 'Плющ', price: '650 ₽', height: '5-10 м', feature: 'Вечнозеленый' },
+        { name: 'Жимолость каприфоль', price: '750 ₽', height: '3-4 м', bloom: 'Май-июнь' },
+        { name: 'Актинидия (Киви)', price: '900 ₽', height: '3-5 м', feature: 'Плодовая' },
+        { name: 'Хмель обыкновенный', price: '500 ₽', height: '5-7 м', feature: 'Быстрорастущий' },
+        { name: 'Гортензия черешковая', price: '1 200 ₽', height: '3-5 м', bloom: 'Июнь-июль' }
       ]
     }
   };
+
+  const allPlants = useMemo(() => {
+    const plants: any[] = [];
+    Object.entries(plantCategories).forEach(([category, data]) => {
+      data.varieties.forEach((variety: any) => {
+        plants.push({
+          ...variety,
+          category,
+          categoryIcon: data.icon
+        });
+      });
+    });
+    return plants;
+  }, []);
+
+  const filteredPlants = useMemo(() => {
+    if (!searchQuery.trim()) return allPlants;
+    
+    const query = searchQuery.toLowerCase();
+    return allPlants.filter(plant => 
+      plant.name.toLowerCase().includes(query) ||
+      plant.category.toLowerCase().includes(query)
+    );
+  }, [searchQuery, allPlants]);
 
   const openPlantDialog = (categoryName: string) => {
     const category = plantCategories[categoryName as keyof typeof plantCategories];
@@ -182,45 +303,119 @@ const Index = () => {
           <h2 className="mb-8 text-center font-heading text-4xl font-bold text-primary">
             Каталог
           </h2>
-          <Tabs defaultValue="plants" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="plants">Растения</TabsTrigger>
-              <TabsTrigger value="materials">Материалы</TabsTrigger>
-            </TabsList>
-            <TabsContent value="plants">
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {Object.entries(plantCategories).map(([name, data]) => (
-                  <Card 
-                    key={name} 
-                    className="transition-all hover:shadow-lg animate-scale-in cursor-pointer"
-                    onClick={() => openPlantDialog(name)}
-                  >
+          
+          <div className="mb-8 relative max-w-xl mx-auto">
+            <Icon name="Search" className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+            <Input
+              type="text"
+              placeholder="Поиск растений по названию..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 h-12 text-lg"
+            />
+          </div>
+
+          {searchQuery.trim() ? (
+            <div>
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-muted-foreground">
+                  Найдено растений: <span className="font-bold text-foreground">{filteredPlants.length}</span>
+                </p>
+                <Button variant="ghost" size="sm" onClick={() => setSearchQuery('')}>
+                  <Icon name="X" size={16} className="mr-2" />
+                  Очистить
+                </Button>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {filteredPlants.map((plant, index) => (
+                  <Card key={index} className="hover:shadow-lg transition-shadow">
                     <CardHeader>
-                      <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                        <Icon name={data.icon} className="text-primary" size={32} />
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <Badge variant="secondary" className="mb-2">{plant.category}</Badge>
+                          <CardTitle className="text-lg">{plant.name}</CardTitle>
+                          <p className="text-xl font-bold text-primary mt-2">{plant.price}</p>
+                        </div>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 flex-shrink-0">
+                          <Icon name={plant.categoryIcon} className="text-primary" size={24} />
+                        </div>
                       </div>
-                      <CardTitle className="font-heading">{name}</CardTitle>
-                      <CardDescription>{data.description}</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-2xl font-bold text-primary mb-2">{data.price}</p>
-                      <Badge variant="secondary">{data.varieties.length} сортов</Badge>
-                      <Button className="mt-4 w-full">
-                        Выбрать сорт
-                        <Icon name="ChevronRight" size={16} className="ml-2" />
+                    <CardContent className="space-y-2">
+                      {plant.height && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Ruler" size={14} className="text-muted-foreground" />
+                          <span>{plant.height}</span>
+                        </div>
+                      )}
+                      {plant.bloom && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Calendar" size={14} className="text-muted-foreground" />
+                          <span>{plant.bloom}</span>
+                        </div>
+                      )}
+                      {plant.feature && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Icon name="Star" size={14} className="text-muted-foreground" />
+                          <span>{plant.feature}</span>
+                        </div>
+                      )}
+                      <Button className="w-full mt-2">
+                        <Icon name="ShoppingCart" size={16} className="mr-2" />
+                        Заказать
                       </Button>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </TabsContent>
-            <TabsContent value="materials">
-              <div className="text-center py-12">
-                <Icon name="Package" size={64} className="mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">Каталог материалов в разработке</p>
-              </div>
-            </TabsContent>
-          </Tabs>
+              {filteredPlants.length === 0 && (
+                <div className="text-center py-12">
+                  <Icon name="Search" size={64} className="mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">Растения не найдены. Попробуйте другой запрос.</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Tabs defaultValue="plants" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="plants">Растения</TabsTrigger>
+                <TabsTrigger value="materials">Материалы</TabsTrigger>
+              </TabsList>
+              <TabsContent value="plants">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {Object.entries(plantCategories).map(([name, data]) => (
+                    <Card 
+                      key={name} 
+                      className="transition-all hover:shadow-lg animate-scale-in cursor-pointer"
+                      onClick={() => openPlantDialog(name)}
+                    >
+                      <CardHeader>
+                        <div className="mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                          <Icon name={data.icon} className="text-primary" size={32} />
+                        </div>
+                        <CardTitle className="font-heading">{name}</CardTitle>
+                        <CardDescription>{data.description}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-2xl font-bold text-primary mb-2">{data.price}</p>
+                        <Badge variant="secondary">{data.varieties.length} сортов</Badge>
+                        <Button className="mt-4 w-full">
+                          Выбрать сорт
+                          <Icon name="ChevronRight" size={16} className="ml-2" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="materials">
+                <div className="text-center py-12">
+                  <Icon name="Package" size={64} className="mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">Каталог материалов в разработке</p>
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
         </section>
 
         <section className="mb-16">
